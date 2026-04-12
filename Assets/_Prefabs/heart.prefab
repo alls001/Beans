@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4377663806001689889}
   - component: {fileID: 2144530359983248733}
   - component: {fileID: 3791813252061984799}
+  - component: {fileID: 9196101224740943961}
   m_Layer: 0
   m_Name: heart
   m_TagString: Untagged
@@ -139,3 +140,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &9196101224740943961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8459188293086364316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d1dd5058e6da7a4db99dfb0341da81c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealingHeart
+  healAmount: 2
+  targetTag: Player
+  lifeTime: 10
