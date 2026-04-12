@@ -12,6 +12,10 @@ public abstract class EnemyBase : MonoBehaviour
     public bool autoDetectPlayer = true;
     public float detectionDistance = 20f;
     public LayerMask playerLayer;
+    [Header("Drop")]
+public GameObject healingHeartPrefab;
+[Range(0f, 1f)] public float healingHeartDropChance = 0.3f;
+public Transform dropPoint;
 
     [Header("Movimento")]
     public float moveSpeed = 3.5f;
@@ -226,7 +230,19 @@ public abstract class EnemyBase : MonoBehaviour
 
         deathRoutine = StartCoroutine(DeathRoutine());
     }
+protected void TryDropHealingHeart()
+{
+    if (healingHeartPrefab == null)
+        return;
 
+    float roll = Random.value;
+
+    if (roll <= healingHeartDropChance)
+    {
+        Vector3 spawnPos = dropPoint != null ? dropPoint.position : transform.position;
+        Instantiate(healingHeartPrefab, spawnPos, Quaternion.identity);
+    }
+}
     protected virtual IEnumerator DeathRoutine()
     {
         isDead = true;
@@ -242,6 +258,7 @@ public abstract class EnemyBase : MonoBehaviour
 
         yield return new WaitForSeconds(deathDuration);
         yield return new WaitForSeconds(disableDelayAfterDeath);
+        TryDropHealingHeart();
 
         gameObject.SetActive(false);
     }

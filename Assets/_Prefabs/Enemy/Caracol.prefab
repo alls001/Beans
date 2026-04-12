@@ -143,6 +143,9 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
+  healingHeartPrefab: {fileID: 8459188293086364316, guid: 06ee1f720c31cc54fa912e42c65eb296, type: 3}
+  healingHeartDropChance: 0.109
+  dropPoint: {fileID: 8624008635539196821}
   moveSpeed: 6
   stoppingDistance: 10
   useGravity: 1

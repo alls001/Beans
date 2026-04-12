@@ -215,7 +215,14 @@ public class HealthSystem : MonoBehaviour
 
         gameObject.SetActive(false);
     }
+public void Heal(float amount)
+{
+    if (isDead) return;
+    if (amount <= 0f) return;
 
+    CurrentHealth = Mathf.Min(CurrentHealth + amount, maxHealth);
+    Debug.Log($"{gameObject.name} curou {amount}. Vida: {CurrentHealth}/{maxHealth}");
+}
     public bool IsDead() => isDead;
     public bool IsInvulnerable() => isInvulnerable;
     public bool IsKnockedBack() => isKnockedBack;
