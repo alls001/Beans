@@ -439,9 +439,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   healingHeartPrefab: {fileID: 8459188293086364316, guid: 06ee1f720c31cc54fa912e42c65eb296, type: 3}
-  healingHeartDropChance: 0.3
+  healingHeartDropChance: 1
   dropPoint: {fileID: 4585083921137073243}
-  moveSpeed: 5
+  moveSpeed: 3
   stoppingDistance: 2
   useGravity: 1
   hitDuration: 0.35
@@ -454,15 +454,15 @@ MonoBehaviour:
   attackPoint: {fileID: 2323038138571459997}
   meleeRange: 7.13
   attackStartDistance: 12.16
-  meleeDamage: 2
-  meleeCooldown: 3
+  meleeDamage: 1
+  meleeCooldown: 5
   meleeWindup: 0.5
   meleeAnimationName: Near-Attack
   projectilePrefab: {fileID: 3709574786736940086, guid: 39688d9654c7fc64c89222cf02658d1e, type: 3}
   firePoint: {fileID: 1458751634426540446}
   rangedMinDistance: 50.14
   rangedMaxDistance: 132.7
-  fireballCooldown: 2
+  fireballCooldown: 5
   fireballWindup: 0.05
   projectileSpeed: 10
   keepMovingWhilePreparingFireball: 0

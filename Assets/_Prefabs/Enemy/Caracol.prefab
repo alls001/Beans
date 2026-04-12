@@ -149,9 +149,9 @@ MonoBehaviour:
   moveSpeed: 6
   stoppingDistance: 10
   useGravity: 1
-  hitDuration: 0.35
-  deathDuration: 0.9
-  disableDelayAfterDeath: 0.5
+  hitDuration: 0.74
+  deathDuration: 1
+  disableDelayAfterDeath: 1
   idleAnimationName: Idle
   walkAnimationName: Walk
   hitAnimationName: Hit
@@ -159,8 +159,8 @@ MonoBehaviour:
   attackPoint: {fileID: 7818687023543934254}
   meleeRange: 6.22
   attackStartDistance: 10.33
-  meleeDamage: 2
-  meleeCooldown: 1.2
+  meleeDamage: 1
+  meleeCooldown: 2
   meleeWindup: 0.2
   meleeAnimationName: Attack
 --- !u!65 &4923814540071979242
@@ -182,7 +182,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 12.22, y: 9.08, z: 7.57}
+  m_Size: {x: 12.22, y: 9.08, z: 14.71}
   m_Center: {x: 1.75, y: -0.58, z: 0}
 --- !u!114 &1452349256046796610
 MonoBehaviour:
