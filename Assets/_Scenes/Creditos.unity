@@ -277,7 +277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneSceneManager
   nextSceneName: Menu
   loadDelay: 0
-  videoPlayer: {fileID: 0}
+  videoPlayer: {fileID: 2033082683}
   autoPlay: 1
   skipButton: {fileID: 0}
   skipKey: 32
