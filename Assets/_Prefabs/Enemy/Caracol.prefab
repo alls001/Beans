@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 437231593797222891}
   - component: {fileID: 4923814540071979242}
   - component: {fileID: 1452349256046796610}
+  - component: {fileID: 1027115455509756767}
   m_Layer: 7
   m_Name: Caracol
   m_TagString: Untagged
@@ -198,6 +199,28 @@ MonoBehaviour:
   knockbackDuration: 0.18
   invulnerabilityTime: 0.6
   blinkInterval: 0.08
+--- !u!95 &1027115455509756767
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3492941591884868458}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7725156023697503982
 GameObject:
   m_ObjectHideFlags: 0

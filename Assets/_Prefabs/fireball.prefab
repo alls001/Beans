@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7947141549601095221}
   - component: {fileID: 5688700265413426117}
   - component: {fileID: 2749080237355507099}
+  - component: {fileID: 1298894279145532935}
   m_Layer: 0
   m_Name: fireball
   m_TagString: Untagged
@@ -105,7 +106,7 @@ SphereCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -138,7 +139,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 124
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &2749080237355507099
 MonoBehaviour:
@@ -155,3 +156,15 @@ MonoBehaviour:
   damage: 1
   targetTag: Player
   lifeTime: 50
+--- !u!114 &1298894279145532935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3709574786736940086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3394032a7e0178d4bad7e12fb8f7206c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Billboard
