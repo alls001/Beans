@@ -2,32 +2,40 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float damage = 1f; // Dano deste projétil
-    public string targetTag = "Player"; // Tag do alvo a acertar
+    public float damage = 1f;
+    public string targetTag = "Player";
+    public float lifeTime = 5f;
 
-    void  start()
+    private Rigidbody rb;
+
+    void Start()
     {
-        Debug.Log("Name of the projectile: " + this.gameObject.name);
+        rb = GetComponent<Rigidbody>();
 
-        // Destroy(gameObject, 5f);
+        if (rb == null)
+            Debug.LogError("Projectile sem Rigidbody!");
+
+        Destroy(gameObject, lifeTime);
     }
 
     void OnTriggerEnter(Collider other)
     {
-        // Verifica se colidiu com o alvo correto
+        // Evita bater em si mesmo ou no inimigo
         if (other.CompareTag(targetTag))
         {
-            // Tenta pegar o HealthSystem do alvo
             HealthSystem targetHealth = other.GetComponent<HealthSystem>();
+
             if (targetHealth != null)
             {
-                // Aplica o dano
-                targetHealth.TakeDamage(damage);
+                targetHealth.TakeDamage(damage, transform);
             }
-            // Destrói o projétil ao acertar
+
             Destroy(gameObject);
+            return;
         }
-        else if (!other.isTrigger) // Se colidiu com algo sólido que não seja um trigger
+
+        // Bateu em parede ou chão
+        if (!other.isTrigger)
         {
             Destroy(gameObject);
         }

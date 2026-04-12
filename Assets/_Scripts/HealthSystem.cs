@@ -26,7 +26,7 @@ public class HealthSystem : MonoBehaviour
     private Collider charCollider;
     private SpriteRenderer spriteRenderer;
     private PlayerController3D playerController;
-    private EnemyController enemyController;
+    private EnemyBase enemyController;
 
     void Awake()
     {
@@ -37,7 +37,7 @@ public class HealthSystem : MonoBehaviour
         charCollider = GetComponent<Collider>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerController = GetComponent<PlayerController3D>();
-        enemyController = GetComponent<EnemyController>();
+        enemyController = GetComponent<EnemyBase>();
 
         if (animator == null) Debug.LogWarning("HealthSystem: Animator não encontrado em " + gameObject.name);
         if (rb == null) Debug.LogWarning("HealthSystem: Rigidbody não encontrado em " + gameObject.name);
