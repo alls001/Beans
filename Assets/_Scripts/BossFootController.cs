@@ -90,6 +90,17 @@ public class BossFootController : MonoBehaviour
     [SerializeField] private float bossInvulnerabilityTime = 0.08f;
     [SerializeField] private float bossBlinkInterval = 0.04f;
 
+    [Header("Boss Health UI")]
+    [SerializeField] private bool showBossHealthBar = true;
+    [SerializeField] private string bossHealthBarTitle = "PE GIGANTE";
+    [SerializeField] private Vector2 bossHealthBarSize = new Vector2(380f, 28f);
+    [SerializeField] private float bossHealthBarTopMargin = 24f;
+    [SerializeField] private float bossHealthBarSideMargin = 16f;
+    [SerializeField] private Color bossHealthBarBackColor = new Color(0.08f, 0.04f, 0.04f, 0.82f);
+    [SerializeField] private Color bossHealthBarFillColor = new Color(0.9f, 0.08f, 0.08f, 0.95f);
+    [SerializeField] private Color bossHealthBarBorderColor = new Color(1f, 0.78f, 0.28f, 0.95f);
+    [SerializeField] private Color bossHealthBarTextColor = Color.white;
+
     [Header("Editor Preview")]
     [SerializeField] private bool previewIdlePoseInEditor = true;
 
@@ -119,6 +130,7 @@ public class BossFootController : MonoBehaviour
     private bool bossDefeated;
     private int originalFootLayer;
     private int enemyLayerIndex = -1;
+    private GUIStyle bossHealthBarLabelStyle;
 
     private void Awake()
     {
@@ -375,6 +387,37 @@ public class BossFootController : MonoBehaviour
                     SetState(BossState.IdleGround);
                 break;
         }
+    }
+
+    private void OnGUI()
+    {
+        if (!Application.isPlaying || !showBossHealthBar || bossDefeated || bossHealth == null)
+            return;
+
+        float maxHealth = Mathf.Max(0.01f, bossHealth.maxHealth);
+        float healthPercent = Mathf.Clamp01(bossHealth.CurrentHealth / maxHealth);
+        float maxWidth = Mathf.Max(1f, Screen.width - (bossHealthBarSideMargin * 2f));
+        float barWidth = Mathf.Min(bossHealthBarSize.x, maxWidth);
+        float barHeight = Mathf.Max(8f, bossHealthBarSize.y);
+        Rect barRect = new Rect(
+            (Screen.width - barWidth) * 0.5f,
+            bossHealthBarTopMargin,
+            barWidth,
+            barHeight);
+
+        DrawSolidRect(new Rect(barRect.x - 3f, barRect.y - 3f, barRect.width + 6f, barRect.height + 6f), bossHealthBarBorderColor);
+        DrawSolidRect(barRect, bossHealthBarBackColor);
+
+        if (healthPercent > 0f)
+        {
+            Rect fillRect = new Rect(barRect.x, barRect.y, barRect.width * healthPercent, barRect.height);
+            DrawSolidRect(fillRect, bossHealthBarFillColor);
+        }
+
+        DrawBorder(barRect, 2f, Color.black);
+
+        string label = $"{bossHealthBarTitle}  {Mathf.CeilToInt(bossHealth.CurrentHealth)}/{Mathf.CeilToInt(maxHealth)}";
+        GUI.Label(barRect, label, GetBossHealthBarLabelStyle());
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -912,5 +955,37 @@ public class BossFootController : MonoBehaviour
     private static Vector3 ScaleVector(float scale)
     {
         return new Vector3(scale, scale, scale);
+    }
+
+    private GUIStyle GetBossHealthBarLabelStyle()
+    {
+        if (bossHealthBarLabelStyle == null)
+        {
+            bossHealthBarLabelStyle = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontStyle = FontStyle.Bold
+            };
+        }
+
+        bossHealthBarLabelStyle.normal.textColor = bossHealthBarTextColor;
+        bossHealthBarLabelStyle.fontSize = Mathf.Clamp(Mathf.RoundToInt(bossHealthBarSize.y * 0.55f), 10, 20);
+        return bossHealthBarLabelStyle;
+    }
+
+    private static void DrawSolidRect(Rect rect, Color color)
+    {
+        Color previousColor = GUI.color;
+        GUI.color = color;
+        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+        GUI.color = previousColor;
+    }
+
+    private static void DrawBorder(Rect rect, float thickness, Color color)
+    {
+        DrawSolidRect(new Rect(rect.xMin, rect.yMin, rect.width, thickness), color);
+        DrawSolidRect(new Rect(rect.xMin, rect.yMax - thickness, rect.width, thickness), color);
+        DrawSolidRect(new Rect(rect.xMin, rect.yMin, thickness, rect.height), color);
+        DrawSolidRect(new Rect(rect.xMax - thickness, rect.yMin, thickness, rect.height), color);
     }
 }
