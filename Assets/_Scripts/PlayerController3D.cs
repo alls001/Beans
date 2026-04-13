@@ -687,9 +687,12 @@ public class PlayerController3D : MonoBehaviour
             }
 
             HealthSystem hs = c.GetComponent<HealthSystem>();
+            if (hs == null)
+                hs = c.GetComponentInParent<HealthSystem>();
+
             if (hs != null)
             {
-                hs.TakeDamage(damage);
+                hs.TakeDamage(damage, transform);
                 hitSomeone = true;
             }
         }

@@ -34,6 +34,7 @@ public Transform dropPoint;
     public string dieAnimationName = "Die";
 
     protected Rigidbody rb;
+    protected HealthSystem healthSystem;
 
     protected bool isDead = false;
     protected bool isTakingHit = false;
@@ -53,6 +54,7 @@ public Transform dropPoint;
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
+        healthSystem = GetComponent<HealthSystem>();
 
         if (quadAnimator == null)
             quadAnimator = GetComponentInChildren<QuadSpriteAnimator>();
@@ -91,7 +93,17 @@ public Transform dropPoint;
     {
         if (rb == null) return;
 
-        if (isDead || isTakingHit)
+        if (isDead)
+        {
+            StopMovement();
+            ApplyMovement();
+            return;
+        }
+
+        if (healthSystem != null && healthSystem.IsKnockedBack())
+            return;
+
+        if (isTakingHit)
         {
             StopMovement();
             ApplyMovement();
