@@ -502,8 +502,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
   maxHealth: 10
   disappearDelayAfterDeath: 0.8
-  knockbackForce: 10
-  knockbackDuration: 3.69
+  knockbackForce: 12
+  knockbackDuration: 0.16
   invulnerabilityTime: 0.6
   blinkInterval: 0.08
 --- !u!1 &8242808746061597073

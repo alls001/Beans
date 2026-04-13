@@ -72,6 +72,7 @@ public class EnemyController : MonoBehaviour
     public string dieAnimationName = "Die";
 
     private Rigidbody rb;
+    private HealthSystem healthSystem;
 
     private Vector2 lookDirection = Vector2.right;
     private float nextAttackTime = 0f;
@@ -93,6 +94,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        healthSystem = GetComponent<HealthSystem>();
 
         if (quadAnimator == null)
             quadAnimator = GetComponentInChildren<QuadSpriteAnimator>();
@@ -181,6 +183,9 @@ public class EnemyController : MonoBehaviour
 
         if (isTakingHit)
         {
+            if (healthSystem != null && healthSystem.IsKnockedBack())
+                return;
+
             rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
             return;
         }

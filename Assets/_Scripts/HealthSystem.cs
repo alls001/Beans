@@ -28,6 +28,7 @@ public class HealthSystem : MonoBehaviour
     private PlayerController3D playerController;
     private EnemyBase enemyController;
     private BossFootController bossController;
+    private Coroutine knockbackCoroutine;
 
     void Awake()
     {
@@ -61,11 +62,6 @@ public class HealthSystem : MonoBehaviour
         bool isEnemy = enemyController != null;
         bool isBoss = bossController != null;
 
-        if (attackerTransform != null && knockbackForce > 0f && rb != null && !rb.isKinematic)
-        {
-            StartCoroutine(ApplyKnockbackCoroutine(attackerTransform));
-        }
-
         if (spriteRenderer != null)
         {
             StartCoroutine(DamageFlashAndInvulnerability());
@@ -93,6 +89,14 @@ public class HealthSystem : MonoBehaviour
             {
                 animator.SetTrigger("Damage");
             }
+        }
+
+        if (attackerTransform != null && knockbackForce > 0f && rb != null && !rb.isKinematic)
+        {
+            if (knockbackCoroutine != null)
+                StopCoroutine(knockbackCoroutine);
+
+            knockbackCoroutine = StartCoroutine(ApplyKnockbackCoroutine(attackerTransform));
         }
 
         if (CurrentHealth <= 0f)
@@ -134,23 +138,23 @@ public class HealthSystem : MonoBehaviour
 
         if (dir.sqrMagnitude < 0.001f)
         {
-            dir = transform.forward;
+            dir = attacker.forward;
             dir.y = 0f;
         }
 
         dir.Normalize();
 
-        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-        rb.AddForce(dir * knockbackForce, ForceMode.VelocityChange);
-
         float t = 0f;
         while (t < knockbackDuration)
         {
+            rb.linearVelocity = new Vector3(dir.x * knockbackForce, rb.linearVelocity.y, dir.z * knockbackForce);
             t += Time.deltaTime;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
+        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
         isKnockedBack = false;
+        knockbackCoroutine = null;
     }
 
     private IEnumerator DamageFlashAndInvulnerability()

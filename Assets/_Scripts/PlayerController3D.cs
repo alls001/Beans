@@ -18,6 +18,25 @@ public class PlayerController3D : MonoBehaviour
     [Header("Combo")]
     public float comboResetTime = 0.9f;
 
+    [Header("Habilidade de Projetil")]
+    public KeyCode projectileKey = KeyCode.Q;
+    public GameObject projectilePrefab;
+    public Transform projectileSpawnPoint;
+    public LayerMask projectileTargetLayer;
+    public string projectileTargetTag = "Enemy";
+    public float projectileDamage = 999f;
+    public float projectileSpeed = 80f;
+    public float projectileCooldown = 5f;
+    public float projectileLifeTime = 2.5f;
+    public float projectileSpawnOffset = 8f;
+    public int projectileSoundIndex = -1;
+
+    [Header("UI do Projetil")]
+    public bool showProjectileCooldownUI = true;
+    public Vector2 projectileCooldownUIPosition = new Vector2(64f, 64f);
+    public Vector2 projectileCooldownUISize = new Vector2(36f, 36f);
+    public Texture2D projectileCooldownIcon;
+
     [Header("Ataque 1")]
     public float attack1Damage = 2f;
     public float attack1Range = 1.3f;
@@ -76,6 +95,7 @@ public class PlayerController3D : MonoBehaviour
     private bool lockMovementDuringAttack = false;
 
     private float lastNonZeroHorizontal = 1f;
+    private float nextProjectileTime = 0f;
 
     private int comboStep = 0;
     private float lastComboTime = -999f;
@@ -87,6 +107,7 @@ public class PlayerController3D : MonoBehaviour
     private Coroutine deathCoroutine;
 
     private string currentQuadAnimation = "";
+    private Vector3 lastProjectileDirection = Vector3.right;
 
     void Start()
     {
@@ -99,6 +120,9 @@ public class PlayerController3D : MonoBehaviour
         if (attackPoint == null)
             Debug.LogError("PlayerController3D: AttackPoint não atribuído!");
 
+        if (projectileTargetLayer.value == 0)
+            projectileTargetLayer = enemyLayer;
+
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
 
@@ -110,6 +134,7 @@ public class PlayerController3D : MonoBehaviour
         HandleMovementInput();
         HandleSprintInput();
         HandleAttackInput();
+        HandleProjectileInput();
         HandleFlip();
         HandleWalkSound();
         UpdateAnimator();
@@ -151,6 +176,9 @@ public class PlayerController3D : MonoBehaviour
 
         if (moveInput.sqrMagnitude > 1f)
             moveInput.Normalize();
+
+        if (moveInput.sqrMagnitude > 0.001f)
+            lastProjectileDirection = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
     }
 
     void HandleSprintInput()
@@ -179,6 +207,116 @@ public class PlayerController3D : MonoBehaviour
                 queuedNextAttack = true;
             }
         }
+    }
+
+    void OnGUI()
+    {
+        if (!showProjectileCooldownUI)
+            return;
+
+        Rect boxRect = new Rect(
+            projectileCooldownUIPosition.x,
+            projectileCooldownUIPosition.y,
+            projectileCooldownUISize.x,
+            projectileCooldownUISize.y);
+
+        float fillAmount = GetProjectileCooldownFill01();
+        DrawProjectileCooldownIcon(boxRect, fillAmount);
+    }
+
+    void HandleProjectileInput()
+    {
+        if (isDead || isTakingHit) return;
+
+        if (Input.GetKeyDown(projectileKey) && CanFireProjectile())
+        {
+            FireProjectileAbility();
+            nextProjectileTime = Time.time + projectileCooldown;
+        }
+    }
+
+    bool CanFireProjectile()
+    {
+        if (projectilePrefab == null)
+        {
+            Debug.LogWarning("PlayerController3D: ProjectilePrefab nao atribuido.");
+            return false;
+        }
+
+        return !isSprinting && !isAttacking && Time.time >= nextProjectileTime;
+    }
+
+    float GetProjectileCooldownFill01()
+    {
+        if (projectileCooldown <= 0f)
+            return 1f;
+
+        float remaining = Mathf.Max(0f, nextProjectileTime - Time.time);
+        return 1f - Mathf.Clamp01(remaining / projectileCooldown);
+    }
+
+    void DrawProjectileCooldownIcon(Rect boxRect, float fillAmount)
+    {
+        bool isReady = fillAmount >= 0.999f;
+        Color backgroundColor = isReady
+            ? new Color(0.95f, 0.32f, 0.05f, 0.45f)
+            : new Color(0f, 0f, 0f, 0.55f);
+        Color borderColor = isReady
+            ? new Color(1f, 0.78f, 0.28f, 0.95f)
+            : new Color(1f, 1f, 1f, 0.45f);
+
+        DrawSolidRect(boxRect, backgroundColor);
+
+        Rect iconRect = new Rect(boxRect.x + 2f, boxRect.y + 2f, boxRect.width - 4f, boxRect.height - 4f);
+
+        if (projectileCooldownIcon != null)
+        {
+            Color previousColor = GUI.color;
+
+            GUI.color = new Color(1f, 1f, 1f, isReady ? 0.45f : 0.25f);
+            GUI.DrawTexture(iconRect, projectileCooldownIcon, ScaleMode.ScaleAndCrop, true);
+
+            float filledHeight = iconRect.height * fillAmount;
+            if (filledHeight > 0.01f)
+            {
+                Rect fillRect = new Rect(iconRect.x, iconRect.yMax - filledHeight, iconRect.width, filledHeight);
+
+                GUI.BeginGroup(fillRect);
+                GUI.color = Color.white;
+                Rect shiftedIconRect = new Rect(
+                    iconRect.x - fillRect.x,
+                    iconRect.y - fillRect.y,
+                    iconRect.width,
+                    iconRect.height);
+                GUI.DrawTexture(shiftedIconRect, projectileCooldownIcon, ScaleMode.ScaleAndCrop, true);
+                GUI.EndGroup();
+            }
+
+            GUI.color = previousColor;
+        }
+        else
+        {
+            Rect fillRect = new Rect(iconRect.x, iconRect.yMax - iconRect.height * fillAmount, iconRect.width, iconRect.height * fillAmount);
+            DrawSolidRect(fillRect, new Color(1f, 0.45f, 0.15f, 0.9f));
+        }
+
+        DrawBorder(boxRect, 2f, borderColor);
+    }
+
+    void DrawSolidRect(Rect rect, Color color)
+    {
+        Color previousColor = GUI.color;
+        GUI.color = color;
+        GUI.DrawTexture(rect, Texture2D.whiteTexture);
+        GUI.color = previousColor;
+    }
+
+    void DrawBorder(Rect rect, float thickness, Color color)
+    {
+        DrawSolidRect(new Rect(rect.xMin, rect.yMin, rect.width, thickness), color);
+        DrawSolidRect(new Rect(rect.xMin, rect.yMax - thickness, rect.width, thickness), color);
+        DrawSolidRect(new Rect(rect.xMin, rect.yMin, thickness, rect.height), color);
+        DrawSolidRect(new Rect(rect.xMax - thickness, rect.yMin, thickness, rect.height), color);
     }
 
     void HandleComboReset()
@@ -303,6 +441,60 @@ public class PlayerController3D : MonoBehaviour
         Vector3 target = new Vector3(moveInput.x, 0f, moveInput.y) * moveSpeed;
         target.y = rb.linearVelocity.y;
         rb.linearVelocity = target;
+    }
+
+    void FireProjectileAbility()
+    {
+        Vector3 direction = GetProjectileDirection();
+        Vector3 spawnPosition = projectileSpawnPoint != null
+            ? projectileSpawnPoint.position
+            : transform.position + direction * projectileSpawnOffset;
+
+        GameObject projectile = Instantiate(
+            projectilePrefab,
+            spawnPosition,
+            Quaternion.LookRotation(direction, Vector3.up));
+
+        LayerMask targetLayer = projectileTargetLayer.value == 0 ? enemyLayer : projectileTargetLayer;
+        Vector3 velocity = direction * projectileSpeed;
+
+        Projectile projectileComponent = projectile.GetComponent<Projectile>();
+        if (projectileComponent != null)
+        {
+            projectileComponent.Launch(
+                velocity,
+                projectileDamage,
+                projectileTargetTag,
+                targetLayer,
+                transform,
+                projectileLifeTime);
+        }
+        else
+        {
+            Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+            if (projectileRb != null)
+            {
+                if (projectileRb.isKinematic)
+                    projectileRb.isKinematic = false;
+
+                projectileRb.linearVelocity = velocity;
+            }
+
+            Destroy(projectile, projectileLifeTime);
+        }
+
+        PlayProjectileSound();
+    }
+
+    Vector3 GetProjectileDirection()
+    {
+        if (moveInput.sqrMagnitude > 0.001f)
+            return new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+
+        if (lastProjectileDirection.sqrMagnitude > 0.001f)
+            return lastProjectileDirection.normalized;
+
+        return new Vector3(lastNonZeroHorizontal >= 0f ? 1f : -1f, 0f, 0f);
     }
 
     IEnumerator AttackComboSequence()
@@ -469,6 +661,12 @@ public class PlayerController3D : MonoBehaviour
             audioSource[index].Play();
     }
 
+    void PlayProjectileSound()
+    {
+        if (projectileSoundIndex < 0) return;
+        PlayAttackSound(projectileSoundIndex);
+    }
+
     void PerformDamageCheck(float damage, float range, bool areaAttack)
     {
         if (attackPoint == null) return;
@@ -496,8 +694,13 @@ public class PlayerController3D : MonoBehaviour
             }
 
             if (hs != null && hitTargets.Add(hs))
+            HealthSystem hs = c.GetComponent<HealthSystem>();
+            if (hs == null)
+                hs = c.GetComponentInParent<HealthSystem>();
+
+            if (hs != null)
             {
-                hs.TakeDamage(damage);
+                hs.TakeDamage(damage, transform);
                 hitSomeone = true;
             }
         }
