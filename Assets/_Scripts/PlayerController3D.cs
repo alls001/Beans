@@ -394,24 +394,24 @@ public class PlayerController3D : MonoBehaviour
     }
 
     string GetDirectionalWalkAnimation()
-{
-    float x = rawInput.x;
-    float y = rawInput.y;
+    {
+        float x = rawInput.x;
+        float y = rawInput.y;
 
-    // Andando para baixo
-    if (y < -0.3f)
-        return walkSouthAnimationName;
+        // Andando para baixo
+        if (y < -0.3f)
+            return walkSouthAnimationName;
 
-    // Andando para cima, mesmo sem componente horizontal
-    if (y > 0.3f)
-        return walkNorthEastAnimationName;
+        // Andando para cima, mesmo sem componente horizontal
+        if (y > 0.3f)
+            return walkNorthEastAnimationName;
 
-    // Andando para os lados
-    if (Mathf.Abs(x) > 0.1f)
-        return walkEastAnimationName;
+        // Andando para os lados
+        if (Mathf.Abs(x) > 0.1f)
+            return walkEastAnimationName;
 
-    return idleAnimationName;
-}
+        return idleAnimationName;
+    }
 
     void UpdateQuadAnimation()
     {
@@ -694,11 +694,6 @@ public class PlayerController3D : MonoBehaviour
             }
 
             if (hs != null && hitTargets.Add(hs))
-            HealthSystem hs = c.GetComponent<HealthSystem>();
-            if (hs == null)
-                hs = c.GetComponentInParent<HealthSystem>();
-
-            if (hs != null)
             {
                 hs.TakeDamage(damage, transform);
                 hitSomeone = true;
