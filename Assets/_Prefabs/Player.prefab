@@ -5060,6 +5060,23 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   comboResetTime: 0.9
+  projectileKey: 113
+  projectilePrefab: {fileID: 3709574786736940086, guid: 39688d9654c7fc64c89222cf02658d1e, type: 3}
+  projectileSpawnPoint: {fileID: 0}
+  projectileTargetLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  projectileTargetTag: Enemy
+  projectileDamage: 999
+  projectileSpeed: 80
+  projectileCooldown: 5
+  projectileLifeTime: 2.5
+  projectileSpawnOffset: 8
+  projectileSoundIndex: -1
+  showProjectileCooldownUI: 1
+  projectileCooldownUIPosition: {x: 64, y: 64}
+  projectileCooldownUISize: {x: 36, y: 36}
+  projectileCooldownIcon: {fileID: 2800000, guid: 7e2f6ecd86430ad4485e0924ff7bd86a, type: 3}
   attack1Damage: 2
   attack1Range: 9.08
   attack1Duration: 0.35
