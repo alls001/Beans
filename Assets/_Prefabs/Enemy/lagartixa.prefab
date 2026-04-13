@@ -306,8 +306,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 33, y: 5.83, z: -1.47713}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.31, y: 0.31, z: 0.31}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 854836342113966147}
   - {fileID: 2323038138571459997}
@@ -434,7 +434,7 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   quadAnimator: {fileID: 4177474203846709428}
   autoDetectPlayer: 1
-  detectionDistance: 51.1
+  detectionDistance: 40.8
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -452,16 +452,16 @@ MonoBehaviour:
   hitAnimationName: Hit
   dieAnimationName: Die
   attackPoint: {fileID: 2323038138571459997}
-  meleeRange: 7.13
-  attackStartDistance: 12.16
+  meleeRange: 2.73
+  attackStartDistance: 3.85
   meleeDamage: 1
   meleeCooldown: 5
   meleeWindup: 0.5
   meleeAnimationName: Near-Attack
   projectilePrefab: {fileID: 3709574786736940086, guid: 39688d9654c7fc64c89222cf02658d1e, type: 3}
   firePoint: {fileID: 1458751634426540446}
-  rangedMinDistance: 50.14
-  rangedMaxDistance: 132.7
+  rangedMinDistance: 10.7
+  rangedMaxDistance: 16
   fireballCooldown: 5
   fireballWindup: 0.05
   projectileSpeed: 10
