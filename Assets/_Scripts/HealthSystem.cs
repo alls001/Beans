@@ -3,7 +3,7 @@ using System.Collections;
 
 public class HealthSystem : MonoBehaviour
 {
-    [Header("Configuração")]
+    [Header("Configuracao")]
     public float maxHealth = 10f;
     public float disappearDelayAfterDeath = 0.8f;
 
@@ -27,6 +27,8 @@ public class HealthSystem : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private PlayerController3D playerController;
     private EnemyBase enemyController;
+    private BossFootController bossController;
+    private Coroutine knockbackCoroutine;
 
     void Awake()
     {
@@ -38,11 +40,14 @@ public class HealthSystem : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerController = GetComponent<PlayerController3D>();
         enemyController = GetComponent<EnemyBase>();
+        bossController = GetComponent<BossFootController>();
 
-        if (animator == null) Debug.LogWarning("HealthSystem: Animator não encontrado em " + gameObject.name);
-        if (rb == null) Debug.LogWarning("HealthSystem: Rigidbody não encontrado em " + gameObject.name);
-        if (charCollider == null) Debug.LogWarning("HealthSystem: Collider não encontrado em " + gameObject.name);
-        if (spriteRenderer == null) Debug.LogWarning("HealthSystem: SpriteRenderer não encontrado em " + gameObject.name);
+        bool isBoss = bossController != null;
+
+        if (animator == null) Debug.LogWarning("HealthSystem: Animator nao encontrado em " + gameObject.name);
+        if (rb == null && !isBoss) Debug.LogWarning("HealthSystem: Rigidbody nao encontrado em " + gameObject.name);
+        if (charCollider == null && !isBoss) Debug.LogWarning("HealthSystem: Collider nao encontrado em " + gameObject.name);
+        if (spriteRenderer == null) Debug.LogWarning("HealthSystem: SpriteRenderer nao encontrado em " + gameObject.name);
     }
 
     public void TakeDamage(float damageAmount, Transform attackerTransform = null)
@@ -55,11 +60,7 @@ public class HealthSystem : MonoBehaviour
 
         bool isPlayer = playerController != null;
         bool isEnemy = enemyController != null;
-
-        if (attackerTransform != null && knockbackForce > 0f && rb != null && !rb.isKinematic)
-        {
-            StartCoroutine(ApplyKnockbackCoroutine(attackerTransform));
-        }
+        bool isBoss = bossController != null;
 
         if (spriteRenderer != null)
         {
@@ -80,10 +81,22 @@ public class HealthSystem : MonoBehaviour
             {
                 enemyController.OnTakeDamage();
             }
+            else if (isBoss)
+            {
+                bossController.OnBossDamaged(damageAmount, CurrentHealth, maxHealth);
+            }
             else if (animator != null)
             {
                 animator.SetTrigger("Damage");
             }
+        }
+
+        if (attackerTransform != null && knockbackForce > 0f && rb != null && !rb.isKinematic)
+        {
+            if (knockbackCoroutine != null)
+                StopCoroutine(knockbackCoroutine);
+
+            knockbackCoroutine = StartCoroutine(ApplyKnockbackCoroutine(attackerTransform));
         }
 
         if (CurrentHealth <= 0f)
@@ -101,6 +114,10 @@ public class HealthSystem : MonoBehaviour
                 else if (isEnemy)
                 {
                     enemyController.OnDeath();
+                }
+                else if (isBoss)
+                {
+                    bossController.OnBossDeath();
                 }
                 else
                 {
@@ -121,23 +138,23 @@ public class HealthSystem : MonoBehaviour
 
         if (dir.sqrMagnitude < 0.001f)
         {
-            dir = transform.forward;
+            dir = attacker.forward;
             dir.y = 0f;
         }
 
         dir.Normalize();
 
-        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-        rb.AddForce(dir * knockbackForce, ForceMode.VelocityChange);
-
         float t = 0f;
         while (t < knockbackDuration)
         {
+            rb.linearVelocity = new Vector3(dir.x * knockbackForce, rb.linearVelocity.y, dir.z * knockbackForce);
             t += Time.deltaTime;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
+        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
         isKnockedBack = false;
+        knockbackCoroutine = null;
     }
 
     private IEnumerator DamageFlashAndInvulnerability()
@@ -215,14 +232,24 @@ public class HealthSystem : MonoBehaviour
 
         gameObject.SetActive(false);
     }
-public void Heal(float amount)
-{
-    if (isDead) return;
-    if (amount <= 0f) return;
 
-    CurrentHealth = Mathf.Min(CurrentHealth + amount, maxHealth);
-    Debug.Log($"{gameObject.name} curou {amount}. Vida: {CurrentHealth}/{maxHealth}");
-}
+    public void Heal(float amount)
+    {
+        if (isDead) return;
+        if (amount <= 0f) return;
+
+        CurrentHealth = Mathf.Min(CurrentHealth + amount, maxHealth);
+        Debug.Log($"{gameObject.name} curou {amount}. Vida: {CurrentHealth}/{maxHealth}");
+    }
+
+    public void ResetHealthToMax()
+    {
+        CurrentHealth = maxHealth;
+        isDead = false;
+        isInvulnerable = false;
+        isKnockedBack = false;
+    }
+
     public bool IsDead() => isDead;
     public bool IsInvulnerable() => isInvulnerable;
     public bool IsKnockedBack() => isKnockedBack;

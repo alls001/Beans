@@ -544,9 +544,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee024a77fba5c154bb54668fae8996b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneSceneManager
-  nextSceneName: Nivel_01
+  nextSceneName: Level01
   loadDelay: 0
-  videoPlayer: {fileID: 0}
+  videoPlayer: {fileID: 2033082683}
   autoPlay: 1
   skipButton: {fileID: 97427160}
   skipKey: 32

@@ -1506,7 +1506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlantGrowthController
   growthAnimationDuration: 2
-  nextSceneName: Level02
+  nextSceneName: LevelBoss
 --- !u!114 &662474778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2937,6 +2937,10 @@ PrefabInstance:
     - target: {fileID: 6940556256144882699, guid: 650cfb4939334464c9cd740c0d7d726a, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8016751196414120247, guid: 650cfb4939334464c9cd740c0d7d726a, type: 3}
+      propertyPath: knockbackForce
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8651767116138230681, guid: 650cfb4939334464c9cd740c0d7d726a, type: 3}
       propertyPath: m_Radius
