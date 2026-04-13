@@ -474,12 +474,19 @@ public class PlayerController3D : MonoBehaviour
         if (attackPoint == null) return;
 
         Collider[] hitColliders = Physics.OverlapSphere(attackPoint.position, range, enemyLayer);
+        HashSet<HealthSystem> hitTargets = new HashSet<HealthSystem>();
 
         bool hitSomeone = false;
 
         foreach (Collider c in hitColliders)
         {
-            if (!areaAttack)
+            HealthSystem hs = c.GetComponent<HealthSystem>();
+            if (hs == null)
+                hs = c.GetComponentInParent<HealthSystem>();
+
+            BossFootController bossTarget = hs != null ? hs.GetComponent<BossFootController>() : null;
+
+            if (!areaAttack && bossTarget == null)
             {
                 Vector3 dirToEnemy = (c.transform.position - transform.position).normalized;
                 float dot = Vector3.Dot(transform.forward, dirToEnemy);
@@ -488,8 +495,7 @@ public class PlayerController3D : MonoBehaviour
                     continue;
             }
 
-            HealthSystem hs = c.GetComponent<HealthSystem>();
-            if (hs != null)
+            if (hs != null && hitTargets.Add(hs))
             {
                 hs.TakeDamage(damage);
                 hitSomeone = true;

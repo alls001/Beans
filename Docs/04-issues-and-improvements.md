@@ -2,6 +2,29 @@
 
 ## Highest-Value Issues
 
+## 0. Boss scene serialization and code drifted apart
+
+Observed issue:
+
+- `LevelBoss.unity` was still serializing an older `BossFootController` field layout after the script had already changed.
+- That made the repo copy of the scene less trustworthy than the live Unity editor state.
+- Several boss docs also kept describing older ground and motion logic after the implementation changed.
+
+Status:
+
+- partially fixed in this pass
+
+Why it matters:
+
+- future sessions can misdiagnose bugs because they are reading stale YAML, not the scene the user is actually testing
+- editor preview, sorting, and serialized defaults can look inconsistent even when runtime code changed
+- docs drift makes it easy to regress to already-rejected behavior
+
+Improvement:
+
+- whenever serialized boss fields change, re-save the affected scene or patch the YAML immediately
+- keep `05`, `10`, `11`, `12`, and `13` aligned so one older doc does not quietly reintroduce bad assumptions
+
 ## 1. Scene progression was partially broken
 
 Observed issues:
@@ -144,9 +167,20 @@ Improvement:
 - either wire those references to finish the feature
 - or remove the audio fields until they are needed
 
+## 10. Footstep audio triggers during boss stomp phase
+
+Observed:
+
+- stepping sounds play during the boss loop even when the foot visuals are not clearly stomping
+
+Improvement:
+
+- confirm which AudioSource is firing during the boss loop
+- gate or replace it with a dedicated boss stomp SFX
+
 ## Technical / Workflow Improvements
 
-## 10. Input strategy is mixed
+## 11. Input strategy is mixed
 
 Observed:
 
@@ -158,7 +192,7 @@ Improvement:
 
 - choose one path and document it
 
-## 11. Repo hygiene can still improve
+## 12. Repo hygiene can still improve
 
 Recommended next steps:
 
@@ -167,7 +201,7 @@ Recommended next steps:
 - add a `.gitattributes`
 - consider an LFS decision for large binary assets if art/video volume grows
 
-## 12. Naming consistency should be cleaned up before the project grows more
+## 13. Naming consistency should be cleaned up before the project grows more
 
 Examples:
 
@@ -186,7 +220,7 @@ Improvement:
   - folders
   - temporary/test content
 
-## 13. Docs were missing
+## 14. Docs were missing
 
 Status:
 
