@@ -220,4 +220,40 @@ if (announcementUI != null)
 
       
     }
+    void OnDrawGizmosSelected()
+{
+    // Área total do mapa
+    Gizmos.color = Color.white;
+    Vector3 center = new Vector3(mapCenter.x, spawnHeightY, mapCenter.y);
+    Vector3 size = new Vector3(mapSize.x, 0.1f, mapSize.y);
+    Gizmos.DrawWireCube(center, size);
+
+    // Área válida de spawn (com margem)
+    float innerWidth = mapSize.x - (spawnEdgeMargin * 2f);
+    float innerHeight = mapSize.y - (spawnEdgeMargin * 2f);
+
+    Gizmos.color = Color.green;
+    Vector3 innerSize = new Vector3(innerWidth, 0.1f, innerHeight);
+    Gizmos.DrawWireCube(center, innerSize);
+
+    // Pontos direcionais (N, S, E, W)
+    float minX = mapCenter.x - mapSize.x / 2f + spawnEdgeMargin;
+    float maxX = mapCenter.x + mapSize.x / 2f - spawnEdgeMargin;
+    float minZ = mapCenter.y - mapSize.y / 2f + spawnEdgeMargin;
+    float maxZ = mapCenter.y + mapSize.y / 2f - spawnEdgeMargin;
+
+    Gizmos.color = Color.red;
+
+    // Norte
+    Gizmos.DrawSphere(new Vector3(0f, spawnHeightY, maxZ), 0.5f);
+
+    // Sul
+    Gizmos.DrawSphere(new Vector3(0f, spawnHeightY, minZ), 0.5f);
+
+    // Leste
+    Gizmos.DrawSphere(new Vector3(maxX, spawnHeightY, 0f), 0.5f);
+
+    // Oeste
+    Gizmos.DrawSphere(new Vector3(minX, spawnHeightY, 0f), 0.5f);
+}
 }

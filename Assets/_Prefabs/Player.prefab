@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 1299832080989022965}
   - component: {fileID: 8666594295905938994}
   - component: {fileID: 7944874093463459227}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dust PS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4900,7 +4900,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2, y: 0.53, z: 7.2}
-  m_LocalScale: {x: 2.48, y: 2.48, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7896383429328099400}
@@ -5035,7 +5035,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 3.573124
+  m_Radius: 2.82
   m_Height: 7.146248
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -5051,8 +5051,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a0844cb061eb44e8aa5535e0459f74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController3D
-  moveSpeed: 50
-  sprintForce: 100
+  moveSpeed: 25
+  sprintForce: 50
   sprintDuration: 0.3
   sprintCooldown: 2
   attackPoint: {fileID: 7896383429328099400}
@@ -5061,31 +5061,31 @@ MonoBehaviour:
     m_Bits: 128
   comboResetTime: 0.9
   projectileKey: 113
-  projectilePrefab: {fileID: 3709574786736940086, guid: 39688d9654c7fc64c89222cf02658d1e, type: 3}
+  projectilePrefab: {fileID: 3709574786736940086, guid: 231df89ed69265a45a8af7f3c40b4d41, type: 3}
   projectileSpawnPoint: {fileID: 0}
   projectileTargetLayer:
     serializedVersion: 2
     m_Bits: 128
   projectileTargetTag: Enemy
-  projectileDamage: 999
+  projectileDamage: 5
   projectileSpeed: 80
   projectileCooldown: 5
   projectileLifeTime: 2.5
   projectileSpawnOffset: 8
   projectileSoundIndex: -1
-  showProjectileCooldownUI: 1
+  showProjectileCooldownUI: 0
   projectileCooldownUIPosition: {x: 64, y: 64}
   projectileCooldownUISize: {x: 36, y: 36}
-  projectileCooldownIcon: {fileID: 2800000, guid: 7e2f6ecd86430ad4485e0924ff7bd86a, type: 3}
-  attack1Damage: 2
-  attack1Range: 9.08
-  attack1Duration: 0.35
-  attack2Damage: 4
-  attack2Range: 9.29
-  attack2Duration: 0.3
-  attack3Damage: 6
-  attack3Range: 22.4
-  attack3Duration: 0.55
+  projectileCooldownIcon: {fileID: 2800000, guid: 1e8ef88cd49987c428377332a6a535fd, type: 3}
+  attack1Damage: 3
+  attack1Range: 17.7
+  attack1Duration: 1
+  attack2Damage: 6
+  attack2Range: 17.8
+  attack2Duration: 1
+  attack3Damage: 7
+  attack3Range: 23.8
+  attack3Duration: 1
   attack3Hits360: 1
   hitAnimationDuration: 0.35
   deathAnimationDuration: 1.2
@@ -5114,6 +5114,7 @@ MonoBehaviour:
   attack3AnimationName: Player_Attack3
   hitAnimationName: Player_Hit
   dieAnimationName: Player_Die
+  shootAnimationName: Player_Shoot
 --- !u!114 &8016751196414120247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5246,7 +5247,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1194643688244002892
 Transform:
@@ -5304,7 +5305,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
+  m_ReceiveGI: 2
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5508,7 +5509,7 @@ GameObject:
   m_Component:
   - component: {fileID: 904426332586201000}
   - component: {fileID: 5298920963816845460}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Passos
   m_TagString: Untagged
   m_Icon: {fileID: 0}

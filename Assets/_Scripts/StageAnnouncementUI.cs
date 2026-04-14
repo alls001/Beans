@@ -12,6 +12,16 @@ public class StageAnnouncementUI : MonoBehaviour
     public TextMeshProUGUI waveText;
     public TextMeshProUGUI messageText;
 
+    [Header("Mensagens editáveis por cena")]
+    [TextArea(2, 4)]
+    public string levelMessage = "Defeat all enemies to keep the beanstalk growing.";
+
+    [TextArea(2, 4)]
+    public string waveMessage = "Get ready for the next wave of monsters.";
+
+    [TextArea(2, 4)]
+    public string finalMessage = "Climb the beanstalk.";
+
     [Header("Áudio")]
     public AudioSource audioSource;
     public AudioClip announcementSfx;
@@ -38,7 +48,7 @@ public class StageAnnouncementUI : MonoBehaviour
         ShowAnnouncement(
             "LEVEL " + levelNumber,
             "",
-            "Defeat all enemies to keep the beanstalk growing.",
+            levelMessage,
             levelIntroDuration
         );
     }
@@ -48,7 +58,7 @@ public class StageAnnouncementUI : MonoBehaviour
         ShowAnnouncement(
             "",
             "WAVE " + waveNumber,
-            "Get ready for the next wave of monsters.",
+            waveMessage,
             waveIntroDuration
         );
     }
@@ -58,7 +68,7 @@ public class StageAnnouncementUI : MonoBehaviour
         ShowAnnouncement(
             "",
             "",
-            "Climb the beanstalk.",
+            finalMessage,
             finalMessageDuration
         );
     }

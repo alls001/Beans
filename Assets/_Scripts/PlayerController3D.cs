@@ -79,6 +79,7 @@ public class PlayerController3D : MonoBehaviour
     public string attack3AnimationName = "Player_Attack3";
     public string hitAnimationName = "Player_Hit";
     public string dieAnimationName = "Player_Die";
+    public string shootAnimationName = "Player_Shoot";
 
     private Rigidbody rb;
     private Animator animator;
@@ -93,6 +94,7 @@ public class PlayerController3D : MonoBehaviour
     private bool isDead = false;
     private bool hitStopRunning = false;
     private bool lockMovementDuringAttack = false;
+    private bool isShooting = false;
 
     private float lastNonZeroHorizontal = 1f;
     private float nextProjectileTime = 0f;
@@ -105,6 +107,7 @@ public class PlayerController3D : MonoBehaviour
     private Coroutine comboCoroutine;
     private Coroutine hitCoroutine;
     private Coroutine deathCoroutine;
+    private Coroutine shootCoroutine;
 
     private string currentQuadAnimation = "";
     private Vector3 lastProjectileDirection = Vector3.right;
@@ -185,7 +188,7 @@ public class PlayerController3D : MonoBehaviour
     {
         if (isDead || isTakingHit) return;
 
-        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.Space)) && canSprint && !isAttacking)
+        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.Space)) && canSprint && !isAttacking && !isShooting)
         {
             StartCoroutine(SprintDash());
         }
@@ -193,7 +196,7 @@ public class PlayerController3D : MonoBehaviour
 
     void HandleAttackInput()
     {
-        if (isDead || isTakingHit) return;
+        if (isDead || isTakingHit || isShooting) return;
 
         if (Input.GetButtonDown("Fire1") && !isSprinting)
         {
@@ -243,7 +246,7 @@ public class PlayerController3D : MonoBehaviour
             return false;
         }
 
-        return !isSprinting && !isAttacking && Time.time >= nextProjectileTime;
+        return !isSprinting && !isAttacking && !isShooting && Time.time >= nextProjectileTime;
     }
 
     float GetProjectileCooldownFill01()
@@ -386,7 +389,7 @@ public class PlayerController3D : MonoBehaviour
         if (animator == null) return;
 
         float speed = Mathf.Clamp01(moveInput.magnitude);
-        float effectiveSpeed = (isAttacking || isSprinting || isTakingHit || isDead) ? 0f : speed;
+        float effectiveSpeed = (isAttacking || isSprinting || isTakingHit || isDead || isShooting) ? 0f : speed;
 
         animator.SetFloat("Horizontal", Mathf.Abs(moveInput.x));
         animator.SetFloat("Vertical", moveInput.y);
@@ -398,15 +401,12 @@ public class PlayerController3D : MonoBehaviour
         float x = rawInput.x;
         float y = rawInput.y;
 
-        // Andando para baixo
         if (y < -0.3f)
             return walkSouthAnimationName;
 
-        // Andando para cima, mesmo sem componente horizontal
         if (y > 0.3f)
             return walkNorthEastAnimationName;
 
-        // Andando para os lados
         if (Mathf.Abs(x) > 0.1f)
             return walkEastAnimationName;
 
@@ -416,7 +416,7 @@ public class PlayerController3D : MonoBehaviour
     void UpdateQuadAnimation()
     {
         if (quadAnimator == null) return;
-        if (isAttacking || isTakingHit || isDead) return;
+        if (isAttacking || isTakingHit || isDead || isShooting) return;
 
         bool isMoving = moveInput.sqrMagnitude > 0.01f;
 
@@ -445,6 +445,11 @@ public class PlayerController3D : MonoBehaviour
 
     void FireProjectileAbility()
     {
+        if (shootCoroutine != null)
+            StopCoroutine(shootCoroutine);
+
+        shootCoroutine = StartCoroutine(ShootRoutine());
+
         Vector3 direction = GetProjectileDirection();
         Vector3 spawnPosition = projectileSpawnPoint != null
             ? projectileSpawnPoint.position
@@ -477,6 +482,7 @@ public class PlayerController3D : MonoBehaviour
                 if (projectileRb.isKinematic)
                     projectileRb.isKinematic = false;
 
+                projectileRb.useGravity = false;
                 projectileRb.linearVelocity = velocity;
             }
 
@@ -484,6 +490,18 @@ public class PlayerController3D : MonoBehaviour
         }
 
         PlayProjectileSound();
+    }
+
+    IEnumerator ShootRoutine()
+    {
+        isShooting = true;
+        ForcePlayQuadAnimation(shootAnimationName);
+
+        yield return new WaitForSeconds(0.25f);
+
+        isShooting = false;
+        shootCoroutine = null;
+        currentQuadAnimation = "";
     }
 
     Vector3 GetProjectileDirection()
@@ -564,11 +582,18 @@ public class PlayerController3D : MonoBehaviour
         isAttacking = false;
         isSprinting = false;
         lockMovementDuringAttack = false;
+        isShooting = false;
 
         if (comboCoroutine != null)
         {
             StopCoroutine(comboCoroutine);
             comboCoroutine = null;
+        }
+
+        if (shootCoroutine != null)
+        {
+            StopCoroutine(shootCoroutine);
+            shootCoroutine = null;
         }
 
         rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
@@ -761,6 +786,7 @@ public class PlayerController3D : MonoBehaviour
             !isAttacking &&
             !isTakingHit &&
             !isDead &&
+            !isShooting &&
             (moveInput.sqrMagnitude > 0.01f || rb.linearVelocity.magnitude > 0.1f);
 
         if (isMoving && !walkSource.isPlaying)

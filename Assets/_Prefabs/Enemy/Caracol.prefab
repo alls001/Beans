@@ -33,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 81.99999, y: 6.98023, z: 0.3}
-  m_LocalScale: {x: 0.27, y: 0.27, z: 0.27}
+  m_LocalScale: {x: 0.32, y: 0.32, z: 0.32}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8059725160074552610}
@@ -139,15 +139,15 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   quadAnimator: {fileID: 6200639630804732291}
   autoDetectPlayer: 1
-  detectionDistance: 45.2
+  detectionDistance: 15.2
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
   healingHeartPrefab: {fileID: 8459188293086364316, guid: 06ee1f720c31cc54fa912e42c65eb296, type: 3}
   healingHeartDropChance: 0.109
   dropPoint: {fileID: 8624008635539196821}
-  moveSpeed: 6
-  stoppingDistance: 10
+  moveSpeed: 4
+  stoppingDistance: 5.22
   useGravity: 1
   hitDuration: 0.74
   deathDuration: 1
@@ -157,8 +157,8 @@ MonoBehaviour:
   hitAnimationName: Hit
   dieAnimationName: Die
   attackPoint: {fileID: 7818687023543934254}
-  meleeRange: 6.22
-  attackStartDistance: 10.33
+  meleeRange: 1.6
+  attackStartDistance: 3.21
   meleeDamage: 1
   meleeCooldown: 2
   meleeWindup: 0.2
@@ -358,7 +358,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8896498735151546986}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 2
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
